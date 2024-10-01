@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 3h 15min -->
+    <!-- 2h 44min -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architektur</title>
+    <link rel="stylesheet" href="stylesheet.css">
+    <script>
+        let currentIndex = 0;
+        let firstPageImages = [
+            'resources/firstPageImages/1.jpg', 
+            'resources/firstPageImages/2.jpg', 
+            'resources/firstPageImages/3.jpg', 
+            'resources/firstPageImages/4.jpeg'
+        ];
+        let autoCycleInterval;
+
+        function showImage(index) {
+            const imageElement = document.getElementById('mainImage');
+            const imageCounter = document.getElementById('imageCounter');
+
+            imageElement.classList.remove('fade-in');
+            imageElement.classList.add('fade-out');
+
+            setTimeout(() => {
+                imageElement.src = firstPageImages[index];
+                imageCounter.textContent = `${index + 1} / ${firstPageImages.length}`;
+                
+                imageElement.classList.remove('fade-out');
+                imageElement.classList.add('fade-in');
+            }, 300);
+        }
+
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % firstPageImages.length;
+            showImage(currentIndex);
+        }
+
+        function previousImage() {
+            currentIndex = (currentIndex - 1 + firstPageImages.length) % firstPageImages.length;
+            showImage(currentIndex);
+        }
+
+        function handleGalleryClick(event) {
+            const clickX = event.clientX;
+            const halfWidth = event.currentTarget.offsetWidth / 2;
+
+            if (clickX < halfWidth) {
+                previousImage();
+            } else {
+                nextImage();
+            }
+
+            resetAutoCycle();
+        }
+
+        function startAutoCycle() {
+            autoCycleInterval = setInterval(nextImage, 5000);
+        }
+
+        function resetAutoCycle() {
+            clearInterval(autoCycleInterval);
+            startAutoCycle();
+        }
+
+        function fadeInElement(elementId) {
+            const element = document.getElementById(elementId);
+            element.style.visibility = "visible";
+            element.classList.add('visible');
+        }
+
+        function fadeOutElement(elementId) {
+            const element = document.getElementById(elementId);
+            element.classList.remove('visible');
+            setTimeout(() => {
+                element.style.visibility = "hidden";
+            }, 500);
+        }
+
+        function clickMenuButton() {
+            document.getElementById("menuButton").classList.add("fade-out");
+            document.getElementById("menuButton").style.visibility = "hidden";
+            document.getElementById("menuContent").style.visibility = "visible";
+            document.getElementById("menuContent").style.transition = "opacity 1s linear";
+            document.getElementById("menuContent").style.opacity = "1";
+        }
+
+        window.onload = function() {
+            showImage(currentIndex);
+            startAutoCycle();
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html">
+            <img src="resources/logo.svg" alt="logo">
+        </a>
+    </div>
+    <div class="contentHover" onclick="handleGalleryClick(event)" onmouseenter="fadeInElement('imageCounter')" onmouseleave="fadeOutElement('imageCounter')">
+        <div class="content">
+            <img id="mainImage" class="fade-in" src="resources/firstPageImages/1.jpg" alt="Bild 1">
+            <p id="imageCounter" class="imageCounter">1 / 4</p>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="menuHeader">
+            <a id="menuButton" onclick="clickMenuButton()">Menü</a>
+        </div>
+        <div class="menuContent" id="menuContent">
+            <a id="teamButton" href="team.html">Team</a>
+            <a id="contactButton" href="kontakt.html">Kontakt</a>
+            <a id="legalButton" href="impressum.html">Impressum</a>
+        </div>
+    </div>
+</body>
+</html>
